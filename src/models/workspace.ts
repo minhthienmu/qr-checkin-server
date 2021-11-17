@@ -8,7 +8,7 @@ const WorkspaceSchema: Schema = new Schema(
     email: { type: String },
     company_name: { type: String, require: true },
     setting: { type: Schema.Types.ObjectId, ref: "WorkspaceSetting" },
-    participants: [{ type: Schema.Types.ObjectId, ref: "Participant" }],
+    participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
     isActive: { type: Boolean, require: true },
   },
   {
