@@ -3,11 +3,6 @@ import User from "../models/user";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-const enum Role {
-    Student = 1,
-    Vendor = 2
-}
-
 const access_token_secret =
   "c7ee923a448307b4d03f86721244f7f7439de25b68f47d59121a05d004495eb48ee5bacf89fd881157bbdc06d7db57dbb2066b0ab059c679969bc843205fb6df";
 
@@ -32,8 +27,7 @@ const Register = (req: Request, res: Response, next: NextFunction) => {
     const user = new User({
         username: req.body.username,
         password: bcrypt.hashSync(req.body.password, 8),
-        role: req.body.role ?? Role.Student,
-      });
+    });
     
     return user
         .save()

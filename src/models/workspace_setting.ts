@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const WorkspaceSettingSchema: Schema = new Schema(
   {
+    workspace_id: { type: Schema.Types.ObjectId, ref: "Workspace" },
     checkinMode: { 
         qrCode: { type: Boolean },
         location: { type: Boolean },

@@ -21,6 +21,7 @@ mongoose.connect(
     pass: "UjTtnz1aeUyQnjZc",
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false
   }
 );
 const db = mongoose.connection;
