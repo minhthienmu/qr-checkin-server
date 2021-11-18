@@ -9,7 +9,7 @@
     <script src="socket.io/socket.io.js"></script>
 
     <script>
-      var socket = io("https://vercel.com/minhthienmu/qr-checkin-server/deployments");
+      var socket = io("https://qr-checkin-server-l5sm6xwm2-minhthienmu.vercel.app");
      
       socket.on("qrcode", function (img) {
         $("#qr-code").html(img);
