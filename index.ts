@@ -88,7 +88,7 @@ try {
       img = `<image src= " ` + qr + `" />`;
 
       socket.emit("qrcode", img)
-    }, 1000 * 60)
+    }, 1000 * 5)
   });
 
   httpServer.listen(config.server.port, () => {
