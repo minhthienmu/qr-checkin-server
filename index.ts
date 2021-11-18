@@ -6,6 +6,8 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import apiRoutes from "./src/routes/api";
 import QRCode from "qrcode";
+import path from "path";
+import * as socketio from 'socket.io';
 
 const app: Application = express();
 
@@ -48,11 +50,15 @@ app.get("/ping", async (req: Request, res: Response): Promise<Response> => {
   });
 });
 
+//TEMPLATE
+//app.use(express.static(path.join(process.cwd(), "./src/views")));
+app.set("views", path.join(process.cwd(), "./src/views"));
+app.set('view engine', 'ejs');
+
 app.get("/qrcode", async (req, res) => {
-  let img = "";
-  let qr = await QRCode.toDataURL("Hello!");
-  img = `<image src= " ` + qr + `" />`;
-  return res.send(img);
+  let r = (Math.random() + 1).toString(36).substring(7);
+  let qr = await QRCode.toDataURL(r);
+  res.render("qrcode", { img: qr });
 });
 
 //ROUTES
@@ -70,6 +76,21 @@ app.use((req: Request, res: Response) => {
 
 try {
   const httpServer = http.createServer(app);
+
+  const io = new socketio.Server(httpServer);
+  io.on("connection", (socket) => {
+    console.log("Socket Connect");
+
+    setInterval(async () => {
+      let img = "";
+      let r = (Math.random() + 1).toString(36).substring(7);
+      let qr = await QRCode.toDataURL(r);
+      img = `<image src= " ` + qr + `" />`;
+
+      socket.emit("qrcode", img)
+    }, 1000 * 60)
+  });
+
   httpServer.listen(config.server.port, () => {
     console.log(
       `Server is running ${config.server.hostname}:${config.server.port}`

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>QR Code</title>
+    <script
+      src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      type="text/javascript"
+    ></script>
+    <script src="socket.io/socket.io.js"></script>
+
+    <script>
+      var socket = io("https://vercel.com/minhthienmu/qr-checkin-server/deployments");
+     
+      socket.on("qrcode", function (img) {
+        $("#qr-code").html(img);
+      });
+    </script>
+  </head>
+
+  <body>
+    <div>
+      <div
+        id="qr-code"
+        style="
+          width: 300px;
+          height: 300px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        "
+      ><image src="<%= img %>" /></div>
+    </div>
+  </body>
+</html>
