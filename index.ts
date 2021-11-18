@@ -5,6 +5,7 @@ import config from "./src/config/config";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import apiRoutes from "./src/routes/api";
+import QRCode from "qrcode";
 
 const app: Application = express();
 
@@ -45,6 +46,13 @@ app.get("/ping", async (req: Request, res: Response): Promise<Response> => {
   return res.status(200).json({
     message: "Server OK!",
   });
+});
+
+app.get("/qrcode", async (req, res) => {
+  let img = "";
+  let qr = await QRCode.toDataURL("Hello!");
+  img = `<image src= " ` + qr + `" />`;
+  return res.send(img);
 });
 
 //ROUTES
