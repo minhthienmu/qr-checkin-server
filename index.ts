@@ -7,7 +7,6 @@ import mongoose from "mongoose";
 import apiRoutes from "./src/routes/api";
 import QRCode from "qrcode";
 import path from "path";
-import * as socketio from 'socket.io';
 
 const app: Application = express();
 
@@ -61,6 +60,15 @@ app.get("/qrcode", async (req, res) => {
   res.render("qrcode", { img: qr });
 });
 
+export let qrCode = "";
+
+//getQRCode
+app.get("/qrcode-render", (req, res) => {
+  return res.status(200).json({
+    data: qrCode,
+  })
+})
+
 //ROUTES
 app.use("/api", apiRoutes);
 
@@ -77,19 +85,14 @@ app.use((req: Request, res: Response) => {
 try {
   const httpServer = http.createServer(app);
 
-  const io = new socketio.Server(httpServer);
-  io.on("connection", (socket) => {
-    console.log("Socket Connect");
-
-    setInterval(async () => {
-      let img = "";
-      let r = (Math.random() + 1).toString(36).substring(7);
-      let qr = await QRCode.toDataURL(r);
-      img = `<image src= " ` + qr + `"width="1000px" />`;
-
-      socket.emit("qrcode", img)
-    }, 1000 * 30)
-  });
+  setInterval(async () => {
+    let img = "";
+    let r = (Math.random() + 1).toString(36).substring(7);
+    console.log(r);
+    let qr = await QRCode.toDataURL(r);
+    img = `<image src= " ` + qr + `"width="1000px" />`;
+    qrCode = img;
+  }, 1000 * 30);
 
   httpServer.listen(config.server.port, () => {
     console.log(
