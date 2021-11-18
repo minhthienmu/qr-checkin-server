@@ -60,12 +60,12 @@ app.get("/qrcode", async (req, res) => {
   res.render("qrcode", { img: qr });
 });
 
-export let qrCode = "";
+export let qrCodeCache = "";
 
 //getQRCode
 app.get("/qrcode-render", (req, res) => {
   return res.status(200).json({
-    data: qrCode,
+    data: qrCodeCache,
   })
 })
 
@@ -91,7 +91,7 @@ try {
     console.log(r);
     let qr = await QRCode.toDataURL(r);
     img = `<image src= " ` + qr + `"width="1000px" />`;
-    qrCode = img;
+    qrCodeCache = img;
   }, 1000 * 30);
 
   httpServer.listen(config.server.port, () => {

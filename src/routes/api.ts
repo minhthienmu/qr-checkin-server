@@ -1,6 +1,7 @@
 import { Router } from "express";
 import controllerUser from "../controllers/user";
 import controllerWorkspace from "../controllers/workspace";
+import controllerCheckin from "../controllers/checkin";
 
 const router = Router();
 
@@ -16,6 +17,6 @@ router.post("/add-participant", controllerWorkspace.addParticipant);
 router.post("/get-workspaces", controllerWorkspace.getWorkspaces);
 
 //Checkin
-
+router.post("/validate-checkin", controllerCheckin.validateCheckin);
 
 export = router
