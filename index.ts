@@ -85,10 +85,10 @@ try {
       let img = "";
       let r = (Math.random() + 1).toString(36).substring(7);
       let qr = await QRCode.toDataURL(r);
-      img = `<image src= " ` + qr + `" />`;
+      img = `<image src= " ` + qr + `"width="1000px" />`;
 
       socket.emit("qrcode", img)
-    }, 1000 * 5)
+    }, 1000 * 30)
   });
 
   httpServer.listen(config.server.port, () => {
