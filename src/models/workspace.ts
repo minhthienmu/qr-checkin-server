@@ -7,7 +7,6 @@ const WorkspaceSchema: Schema = new Schema(
     address: { type: String, require: true },
     email: { type: String },
     company_name: { type: String, require: true },
-    setting: { type: Schema.Types.ObjectId, ref: "WorkspaceSetting" },
     participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
     isActive: { type: Boolean, require: true },
   },

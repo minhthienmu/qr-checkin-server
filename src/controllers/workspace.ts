@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import Workspace from "../models/workspace";
 import WorkspaceSetting from "../models/workspace_setting";
+import History from "../models/history";
 import User from "../models/user";
 
 const createWorkspace = async (req: Request, res: Response, next: NextFunction) => {
@@ -129,12 +130,171 @@ const getWorkspaces = async (req: Request, res: Response, next: NextFunction) =>
   }
 } 
 
+const updateWorkspaceConfig = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspace_id, config } = req.body;
 
+  try {
+    const workspaceSetting = await WorkspaceSetting.findOneAndUpdate({workspace_id: workspace_id}, config);
+    if (workspaceSetting) {
+      return res.status(200).json({ data: "Success" });
+    }
+    return res.status(500).json({ data: "Not found" });
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
 
+const updateWorkspaceInfo = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspace_id, company_name, email, address } = req.body;
+
+  const updateWorkspace = {
+    company_name, email, address
+  }
+
+  try {
+    let workspace = await Workspace.findByIdAndUpdate(workspace_id, updateWorkspace);
+    if (workspace) {
+      return res.status(200).json({ data: "Success" });
+    }
+    return res.status(500).json({ data: "Not found" });
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
+const getWorkspaceModule = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id, workspace_id } = req.body;
+
+  try {
+    const workspace = await Workspace.findById(workspace_id).select("host");
+    if (workspace) {
+      let data: any[] = [];
+      if (workspace.host.toHexString() === user_id) {
+        data = [
+          { id: 1, name: "Employee", description: "Employee List" },
+        ];
+      } else {
+        data = [
+          { id: 1, name: "History", description: "History Checkin/Checkout" },
+        ];
+      }
+      return res.status(200).json({ data: data });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
+const checkHost = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id, workspace_id } = req.body;
+
+  try {
+    const workspace = await Workspace.findById(workspace_id).select("host");
+    if (workspace) {
+      let data: any = {};
+      if (workspace.host.toHexString() === user_id) {
+        data = { isHost: true };
+      } else {
+        data = { isHost: false };
+      }
+      return res.status(200).json({ data: data });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
+const getWorkspaceTime = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspace_id } = req.body;
+
+  try {
+    const setting = await WorkspaceSetting.findOne({workspace_id: workspace_id}).select("time");
+    if (setting) {
+      return res.status(200).json({ data: setting.time });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
+const getWorkspaceLocation = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspace_id } = req.body;
+
+  try {
+    const setting = await WorkspaceSetting.findOne({workspace_id: workspace_id}).select("location");
+    if (setting) {
+      return res.status(200).json({ data: setting.location });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
+const getWorkspaceMode = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspace_id } = req.body;
+
+  try {
+    const setting = await WorkspaceSetting.findOne({workspace_id: workspace_id}).select("checkinMode");
+    if (setting) {
+      return res.status(200).json({ data: setting.checkinMode });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
+const getEmployees = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspace_id } = req.body;
+
+  try {
+    const setting = await WorkspaceSetting.findOne({workspace_id: workspace_id}).select("checkinMode");
+    if (setting) {
+      return res.status(200).json({ data: setting.checkinMode });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
+const getHistory = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id, workspace_id, from, to } = req.body;
+
+  try {
+    const userHistory = await History.findOne({user: user_id});
+    if (history) {
+      return res.status(200).json({ data: { userHistory } });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
 
 export default {
   createWorkspace,
   configurateWorkspace,
   addParticipant,
-  getWorkspaces
+  getWorkspaces,
+  updateWorkspaceConfig,
+  getWorkspaceModule,
+  updateWorkspaceInfo,
+  checkHost,
+  getWorkspaceTime,
+  getWorkspaceLocation,
+  getWorkspaceMode,
+  getEmployees,
+  getHistory
 };

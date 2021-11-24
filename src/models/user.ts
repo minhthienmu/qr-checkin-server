@@ -9,7 +9,6 @@ const UserSchema: Schema = new Schema(
     par_workspace: [
       {
         workspace: { type: Schema.Types.ObjectId, ref: "Workspace" },
-        history_checkin: [{ type: Date }],
       },
     ],
   },

@@ -17,7 +17,7 @@ const validateCheckin = async (req: Request, res: Response, next: NextFunction) 
 
         
   
-        return res.status(200).json({data: "Success"});
+        return res.status(200).json({data: req.body});
     } catch (error: any) {
         return res.status(500).json({data: error.message, error});
     };

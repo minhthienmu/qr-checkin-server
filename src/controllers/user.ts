@@ -11,15 +11,15 @@ const ValidateUser = (req: Request, res: Response, next: NextFunction) => {
     User.findOne({username: req.body.username})
     .exec((err, user) => {
         if (err) {
-            return res.send({ code: 500, data: err });
+            return res.status(500).json({ data: err });
         }
         if (user) {
-            return res.send({code: 400, data: "Failed! Username is already in use!" });
+            return res.status(400).json({data: "Failed! Username is already in use!" });
         }
         next();
     });
   } else {
-    return res.send({ code: 500, data: "Error" });
+    return res.status(500).json({ data: "Error" });
   }
 };
 
@@ -41,17 +41,17 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
         User.findOne({username: req.body.username})
         .exec((err, user) => {
             if (err) {
-                return res.send({ code: 500, data: err });
+                return res.status(500).send({ data: err });
             }
             if (!user) {
-                return res.send({code: 400, data: "Not Found!" });
+                return res.status(401).send({data: "Not Found!" });
             }
             const passwordIsValid = bcrypt.compareSync(
                 req.body.password,
                 user.password
             );
             if (!passwordIsValid) {
-                return res.send({code: 401, data: "Invalid Password!"});
+                return res.status(401).send({data: "Invalid Password!"});
             }
             const accessToken = jwt.sign(
                 { id: user._id },
@@ -61,7 +61,6 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
                 }
               );
             return res.status(200).send({
-                code: 200,
                 data: {
                   id: user._id,
                   username: user.username,
@@ -71,7 +70,7 @@ const Login = (req: Request, res: Response, next: NextFunction) => {
               });
         });
     } else {
-        return res.status(500).send({ code: 500, data: "Error" });
+        return res.status(500).send({ data: "Error" });
     }
 }
 
