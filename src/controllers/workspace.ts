@@ -68,16 +68,18 @@ const addParticipant = async (req: Request, res: Response, next: NextFunction) =
   try {
     const workspace = await Workspace.findById(id);
     if (workspace) {
+      let users: any = [];
       for (let i = 0; i < participants.length; i++) {
         let user = await User.findOne({ username: participants[i] });
         if (user && !workspace.participants.includes(user._id)) {
           workspace.participants.push(user._id);
+          users.push(participants[i]);
           user.par_workspace.push(workspace._id);
           user.save();
         }
       }
       workspace.save();
-      return res.status(200).json({ data: "Success" });
+      return res.status(200).json({ data: users });
     } else {
       return res.status(500).json({ data: "Not found" });
     }
