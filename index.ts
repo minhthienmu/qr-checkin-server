@@ -43,7 +43,7 @@ var corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.get("/ping", async (req: Request, res: Response): Promise<Response> => {
+app.get("/", async (req: Request, res: Response): Promise<Response> => {
   return res.status(200).json({
     message: "Server OK!",
   });

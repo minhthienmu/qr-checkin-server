@@ -257,9 +257,17 @@ const getEmployees = async (req: Request, res: Response, next: NextFunction) => 
   const { workspace_id } = req.body;
 
   try {
-    const setting = await WorkspaceSetting.findOne({workspace_id: workspace_id}).select("checkinMode");
-    if (setting) {
-      return res.status(200).json({ data: setting.checkinMode });
+    const workspace = await Workspace.findById(workspace_id).select("participants");
+    if (workspace) {
+      const participantIds = workspace.participants;
+      let participants: any = [];
+      for(let i = 0; i < participantIds.length; i++) {
+        let user = await User.findById(participantIds[i]).select("username");
+        if (user) {
+          participants.push(user);
+        }
+      }
+      return res.status(200).json({ data: participants });
     } else {
       return res.status(500).json({ data: "Not found" });
     }
