@@ -76,6 +76,7 @@ const addParticipant = async (req: Request, res: Response, next: NextFunction) =
           workspace.participants.push(user._id);
           successUsers.push(participants[i]);
           user.par_workspace.push(workspace._id);
+          console.log(user);
           user.save();
         } else {
           failUsers.push(participants[i]);
@@ -287,12 +288,30 @@ const getEmployees = async (req: Request, res: Response, next: NextFunction) => 
 }
 
 const getHistory = async (req: Request, res: Response, next: NextFunction) => {
-  const { user_id, workspace_id, from, to } = req.body;
+  const { user_id, workspace_id, month, year } = req.body;
 
   try {
-    const userHistory = await History.findOne({user: user_id});
-    if (history) {
-      return res.status(200).json({ data: { userHistory } });
+    const userHistory = await History.findOne({user_id: user_id});
+    if (userHistory) {
+      const workspaceHistory = userHistory.workspaces.find((item: any) => item.workspace_id == workspace_id);
+      if (!workspaceHistory) {
+        return res.status(500).json({ data: "Not found" });
+      }
+      const history = workspaceHistory.history;
+      const dataFilter = history.filter((item: any) => item.getMonth() + 1 == month && item.getFullYear() == year);
+      const data: any[] = [];
+      for (let i = 1; i < 32; i++) {
+        let dates = dataFilter.filter((item: any) => item.getDate() == i);
+        if (dates.length) {
+          data.push({
+            date: dates[0],
+            checkin: dates[0],
+            checkout: dates[dates.length - 1]
+          });
+        }
+      }
+
+      return res.status(200).json({ data: data });
     } else {
       return res.status(500).json({ data: "Not found" });
     }

@@ -57,10 +57,13 @@ app.set('view engine', 'ejs');
 app.get("/qrcode", async (req, res) => {
   let r = (Math.random() + 1).toString(36).substring(7);
   let qr = await QRCode.toDataURL(r);
+  qrCodeStrCache = r;
   res.render("qrcode", { img: qr });
 });
 
 export let qrCodeCache = "";
+export let qrCodeStrCache = (Math.random() + 1).toString(36).substring(7);
+console.log(qrCodeStrCache);
 
 //getQRCode
 app.get("/qrcode-render", (req, res) => {
@@ -92,6 +95,7 @@ try {
     let qr = await QRCode.toDataURL(r);
     img = `<image src= " ` + qr + `"width="1000px" />`;
     qrCodeCache = img;
+    qrCodeStrCache = r;
   }, 1000 * 30);
 
   httpServer.listen(config.server.port, () => {
