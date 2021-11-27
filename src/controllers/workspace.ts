@@ -264,6 +264,26 @@ const getWorkspaceMode = async (req: Request, res: Response, next: NextFunction)
   }
 }
 
+const getWorkspaceInfo = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspace_id } = req.body;
+
+  try {
+    const workspace = await Workspace.findById(workspace_id);
+    if (workspace) {
+      let data = {
+        company_name: workspace.company_name,
+        email: workspace.email,
+        address: workspace.address
+      }
+      return res.status(200).json({ data: data });
+    } else {
+      return res.status(500).json({ data: "Not found" });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ data: error.message, error });
+  }
+}
+
 const getEmployees = async (req: Request, res: Response, next: NextFunction) => {
   const { workspace_id } = req.body;
 
@@ -333,5 +353,6 @@ export default {
   getWorkspaceLocation,
   getWorkspaceMode,
   getEmployees,
-  getHistory
+  getHistory,
+  getWorkspaceInfo
 };

@@ -24,7 +24,7 @@ router.post("/get-workspace-location", controllerUser.CheckAuth, controllerWorks
 router.post("/get-workspace-mode", controllerUser.CheckAuth, controllerWorkspace.getWorkspaceMode);
 router.post("/get-employees", controllerWorkspace.getEmployees);
 router.post("/get-history", controllerWorkspace.getHistory);
-
+router.post("/get-workspace-info", controllerWorkspace.getWorkspaceInfo);
 
 //Checkin
 router.post("/validate-checkin", controllerCheckin.validateCheckin);
