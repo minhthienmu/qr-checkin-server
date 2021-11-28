@@ -11,6 +11,7 @@ const WorkspaceSettingSchema: Schema = new Schema(
         longitude: String,
         latitude: String,
         radius: Number,
+        name: String,
     },
     time: {
         monday: {
