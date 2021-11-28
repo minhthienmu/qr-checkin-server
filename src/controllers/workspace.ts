@@ -48,7 +48,7 @@ const configurateWorkspace = (req: Request, res: Response, next: NextFunction) =
       return workspaceSetting
         .save()
         .then(() => {
-          return res.status(200).json({ data: "Success" });
+          return res.status(200).json({ data: item.name });
         })
         .catch((error: Error) => {
           return res.status(500).json({ data: error.message, error });
